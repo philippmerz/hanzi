@@ -37,7 +37,8 @@
   --overlay: rgba(0, 0, 0, 0.15);
   --font-sans: -apple-system, 'Helvetica Neue', Arial, sans-serif;
   --font-serif: 'Noto Serif SC', 'Songti SC', Georgia, serif;
-  --transition: 180ms ease;
+  --transition: 220ms ease;
+  --transition-slow: 400ms ease;
   --sidebar-shadow: 4px 0 24px rgba(0, 0, 0, 0.08);
 }
 
@@ -66,7 +67,7 @@ body {
   font-family: var(--font-sans);
   background: var(--bg-primary);
   color: var(--text-primary);
-  transition: background var(--transition), color var(--transition);
+  transition: background var(--transition-slow), color var(--transition-slow);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow: hidden;
@@ -143,12 +144,14 @@ body {
   font-variant-numeric: tabular-nums;
   color: var(--text-tertiary);
   letter-spacing: 0.04em;
+  transition: color var(--transition-slow);
 }
 
 .progress-learned {
   font-size: 11px;
   color: var(--accent);
   font-weight: 500;
+  transition: color var(--transition-slow);
 }
 
 /* ============================================================
@@ -185,6 +188,7 @@ body {
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  transition: transform 280ms cubic-bezier(0.4, 0, 0.2, 1), background var(--transition-slow);
 }
 
 .sidebar--open {
@@ -339,9 +343,10 @@ body {
   user-select: none;
   text-align: center;
   margin-bottom: 28px;
-  transition: opacity var(--transition);
   position: relative;
   z-index: 5;
+  animation: char-enter 300ms cubic-bezier(0.25, 0.1, 0.25, 1) both;
+  transition: transform 200ms ease, opacity 200ms ease, color var(--transition-slow);
 }
 
 .hanzi-display--clickable {
@@ -350,6 +355,22 @@ body {
 
 .hanzi-display--clickable:hover {
   opacity: 0.7;
+  transform: scale(1.02);
+}
+
+.hanzi-display--clickable:active {
+  transform: scale(0.97);
+}
+
+@keyframes char-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* --- Card Details --- */
@@ -362,7 +383,7 @@ body {
   min-height: 70px;
   position: relative;
   z-index: 5;
-  animation: fade-in 180ms ease;
+  animation: fade-in 350ms cubic-bezier(0.25, 0.1, 0.25, 1) both;
 }
 
 /* --- Translation --- */
@@ -379,12 +400,14 @@ body {
   font-style: italic;
   color: var(--text-secondary);
   letter-spacing: 0.02em;
+  transition: color var(--transition-slow);
 }
 
 .translation-meaning {
   font-size: 15px;
   font-weight: 500;
   color: var(--text-primary);
+  transition: color var(--transition-slow);
 }
 
 /* --- Context Note --- */
@@ -396,6 +419,9 @@ body {
   text-align: center;
   max-width: 340px;
   padding: 0 20px;
+  transition: color var(--transition-slow);
+  animation: fade-in 450ms cubic-bezier(0.25, 0.1, 0.25, 1) both;
+  animation-delay: 80ms;
 }
 
 /* --- Idle Hint --- */
@@ -421,7 +447,7 @@ body {
 @keyframes fade-in {
   from {
     opacity: 0;
-    transform: translateY(4px);
+    transform: translateY(6px);
   }
   to {
     opacity: 1;
@@ -467,12 +493,21 @@ body {
   font-size: 22px;
   color: var(--text-tertiary);
   opacity: 0;
-  transition: opacity 200ms ease;
+  transition: opacity 300ms ease, transform 300ms ease;
   user-select: none;
+}
+
+.nav-zone--left .nav-zone-arrow {
+  transform: translateX(-4px);
+}
+
+.nav-zone--right .nav-zone-arrow {
+  transform: translateX(4px);
 }
 
 .nav-zone:not(.nav-zone--disabled):hover .nav-zone-arrow {
   opacity: 0.8;
+  transform: translateX(0);
 }
 
 .nav-zone--disabled .nav-zone-arrow {
@@ -523,7 +558,7 @@ body {
   border: 1.5px solid var(--border);
   border-radius: 10px;
   cursor: pointer;
-  transition: all var(--transition);
+  transition: background 250ms ease, border-color 250ms ease;
   padding: 0;
 }
 
@@ -540,7 +575,7 @@ body {
   height: 14px;
   background: var(--text-tertiary);
   border-radius: 50%;
-  transition: all var(--transition);
+  transition: left 300ms cubic-bezier(0.34, 1.56, 0.64, 1), background 250ms ease;
 }
 
 .mode-switch-track--on .mode-switch-thumb {
@@ -558,6 +593,7 @@ body {
   text-align: center;
   padding: 40px 20px;
   line-height: 1.6;
+  animation: fade-in 400ms ease both;
 }
 
 /* ============================================================
@@ -597,5 +633,18 @@ body {
 
   .card-view {
     padding-bottom: 50px;
+  }
+}
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
   }
 }

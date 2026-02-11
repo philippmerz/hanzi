@@ -43,12 +43,13 @@ export const CardView = () => {
       />
 
       <HanziDisplay
+        key={current.id}
         hanzi={current.hanzi}
         clickable={isTest && !revealed}
         onClick={reveal}
       />
 
-      <div className="card-details">
+      <div className="card-details" key={`details-${current.id}-${String(revealed)}`}>
         {showTranslation ? (
           <>
             <Translation
