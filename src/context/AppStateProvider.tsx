@@ -37,6 +37,9 @@ export const AppStateProvider = ({ children }: Props) => {
   const activeCharacters = mode === 'learn' ? filteredCharacters : testDeck;
   const nav = useCharacterNav(activeCharacters);
 
+  // Remember learn-mode index so it survives round-trips to test mode
+  const learnIndexRef = useRef(0);
+
   // Idle hint for test mode — resets on character change or reveal
   const { showHint, dismiss: dismissHint } = useIdleHint([nav.index, mode, revealed]);
 
@@ -47,18 +50,31 @@ export const AppStateProvider = ({ children }: Props) => {
     }
   }, [mode, nav.current?.id, markLearned]);
 
+  // Persist learn index while browsing in learn mode
+  useEffect(() => {
+    if (mode === 'learn') {
+      learnIndexRef.current = nav.index;
+    }
+  }, [mode, nav.index]);
+
   // Hide translation when navigating to a new character
   useEffect(() => {
     hide();
   }, [nav.index, mode, hide]);
 
-  // Reset navigation when switching modes
+  // Restore saved index when switching back to learn, reset for test
   useEffect(() => {
-    nav.reset();
-  }, [mode, nav.reset]);
+    if (mode === 'learn') {
+      nav.goTo(learnIndexRef.current);
+    } else {
+      nav.reset();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode]);
 
   // Reset navigation when collection filter changes
   useEffect(() => {
+    learnIndexRef.current = 0;
     nav.reset();
   }, [enabledIds, nav.reset]);
 
