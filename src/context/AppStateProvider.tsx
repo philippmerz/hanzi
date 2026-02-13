@@ -1,5 +1,6 @@
 import { type ReactNode, useCallback, useEffect, useMemo, useRef } from 'react';
 import { characters, collections } from '../data';
+import { loadFromStorage, saveToStorage } from '../utils/storage';
 import {
   useAppMode,
   useCharacterNav,
@@ -37,8 +38,8 @@ export const AppStateProvider = ({ children }: Props) => {
   const activeCharacters = mode === 'learn' ? filteredCharacters : testDeck;
   const nav = useCharacterNav(activeCharacters);
 
-  // Remember learn-mode index so it survives round-trips to test mode
-  const learnIndexRef = useRef(0);
+  // Remember learn-mode index — persists across mode switches and page reloads
+  const learnIndexRef = useRef(loadFromStorage<number>('hanzi-learn-index', 0));
 
   // Idle hint for test mode — resets on character change or reveal
   const { showHint, dismiss: dismissHint } = useIdleHint([nav.index, mode, revealed]);
@@ -54,6 +55,7 @@ export const AppStateProvider = ({ children }: Props) => {
   useEffect(() => {
     if (mode === 'learn') {
       learnIndexRef.current = nav.index;
+      saveToStorage('hanzi-learn-index', nav.index);
     }
   }, [mode, nav.index]);
 
@@ -75,6 +77,7 @@ export const AppStateProvider = ({ children }: Props) => {
   // Reset navigation when collection filter changes
   useEffect(() => {
     learnIndexRef.current = 0;
+    saveToStorage('hanzi-learn-index', 0);
     nav.reset();
   }, [enabledIds, nav.reset]);
 
