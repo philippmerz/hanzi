@@ -125,6 +125,7 @@ export const AppStateProvider = ({ children }: Props) => {
       canGoPrev: nav.canGoPrev,
       next: handleNext,
       prev: handlePrev,
+      goTo: nav.goTo,
       revealed,
       reveal: handleReveal,
       showHint,
@@ -141,7 +142,7 @@ export const AppStateProvider = ({ children }: Props) => {
     [
       mode, handleToggleMode,
       nav.current, nav.index, nav.total, nav.canGoNext, nav.canGoPrev,
-      handleNext, handlePrev,
+      handleNext, handlePrev, nav.goTo,
       revealed, handleReveal, showHint,
       learnedCount, hasTestDeck, clearSession,
       sortedCollections, isEnabled, toggleCollection,

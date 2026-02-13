@@ -13,6 +13,7 @@ export const TopBar = () => {
     index,
     total,
     learnedCount,
+    goTo,
     collections,
     isCollectionEnabled,
     toggleCollection,
@@ -22,7 +23,7 @@ export const TopBar = () => {
     <>
       <header className="top-bar">
         <HamburgerButton onClick={openSidebar} />
-        <Progress index={index} total={total} learnedCount={learnedCount} />
+        <Progress index={index} total={total} learnedCount={learnedCount} onGoTo={goTo} />
         <div className="top-bar-spacer" />
       </header>
       <Sidebar

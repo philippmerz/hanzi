@@ -14,6 +14,7 @@ interface AppStateContextValue {
   readonly canGoPrev: boolean;
   readonly next: () => void;
   readonly prev: () => void;
+  readonly goTo: (index: number) => void;
 
   // Reveal (test mode)
   readonly revealed: boolean;

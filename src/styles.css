@@ -147,6 +147,42 @@ body {
   transition: color var(--transition-slow);
 }
 
+.progress-clickable {
+  cursor: pointer;
+  transition: color var(--transition);
+}
+
+.progress-clickable:hover {
+  color: var(--text-secondary);
+}
+
+.progress-input {
+  font: inherit;
+  font-size: inherit;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: inherit;
+  color: var(--text-primary);
+  background: none;
+  border: none;
+  outline: none;
+  width: 3ch;
+  text-align: right;
+  caret-color: var(--accent);
+  padding: 0;
+  margin: 0;
+  -moz-appearance: textfield;
+}
+
+.progress-input::-webkit-outer-spin-button,
+.progress-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.progress-separator {
+  color: var(--text-tertiary);
+}
+
 .progress-learned {
   font-size: 11px;
   color: var(--accent);
