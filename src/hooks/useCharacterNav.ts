@@ -2,8 +2,8 @@ import { useState, useCallback, useMemo } from 'react';
 import type { Character } from '../types';
 import { clamp } from '../utils';
 
-export const useCharacterNav = (characters: readonly Character[]) => {
-  const [index, setIndex] = useState(0);
+export const useCharacterNav = (characters: readonly Character[], initialIndex = 0) => {
+  const [index, setIndex] = useState(initialIndex);
 
   const safeIndex = useMemo(
     () => clamp(index, 0, Math.max(characters.length - 1, 0)),

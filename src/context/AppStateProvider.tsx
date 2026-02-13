@@ -36,10 +36,8 @@ export const AppStateProvider = ({ children }: Props) => {
   const { isOpen: sidebarOpen, open: openSidebar, close: closeSidebar } = useSidebar();
 
   const activeCharacters = mode === 'learn' ? filteredCharacters : testDeck;
-  const nav = useCharacterNav(activeCharacters);
-
-  // Remember learn-mode index — persists across mode switches and page reloads
-  const learnIndexRef = useRef(loadFromStorage<number>('hanzi-learn-index', 0));
+  const savedLearnIndex = useRef(loadFromStorage<number>('hanzi-learn-index', 0));
+  const nav = useCharacterNav(activeCharacters, savedLearnIndex.current);
 
   // Idle hint for test mode — resets on character change or reveal
   const { showHint, dismiss: dismissHint } = useIdleHint([nav.index, mode, revealed]);
@@ -54,7 +52,7 @@ export const AppStateProvider = ({ children }: Props) => {
   // Persist learn index while browsing in learn mode
   useEffect(() => {
     if (mode === 'learn') {
-      learnIndexRef.current = nav.index;
+      savedLearnIndex.current = nav.index;
       saveToStorage('hanzi-learn-index', nav.index);
     }
   }, [mode, nav.index]);
@@ -67,16 +65,19 @@ export const AppStateProvider = ({ children }: Props) => {
   // Restore saved index when switching back to learn, reset for test
   useEffect(() => {
     if (mode === 'learn') {
-      nav.goTo(learnIndexRef.current);
+      nav.goTo(savedLearnIndex.current);
     } else {
       nav.reset();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode]);
 
-  // Reset navigation when collection filter changes
+  // Reset navigation when collection filter changes (compare to prev value)
+  const prevEnabledIds = useRef(enabledIds);
   useEffect(() => {
-    learnIndexRef.current = 0;
+    if (prevEnabledIds.current === enabledIds) return;
+    prevEnabledIds.current = enabledIds;
+    savedLearnIndex.current = 0;
     saveToStorage('hanzi-learn-index', 0);
     nav.reset();
   }, [enabledIds, nav.reset]);
